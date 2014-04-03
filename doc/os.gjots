@@ -1,0 +1,755 @@
+\NewEntry
+TODO
+
+Book: Protected Mode Software Architecture
+
+- Make sure the base address of the GDT is aligned on an eight-byte
+  boundry to yield the best performance. See P. 3-17 IASDMv3.
+- Write a better video handler (probably just do this as I need it).
+- Mutual Exclusion (semaphores)
+  See Dijkstra
+- Implement a classic producer consumer problem (dinning philosopher).
+- Random number generator
+  See Knuth
+  May want to assess how other OS's manage random number generation.
+- Discardable code (for run once for initialization code):
+  * http://my.execpc.com/CE/AC/geezer/osd/misc/index.htm
+\NewEntry
+BUGS
+
+- As soon as I added support for multi-tasking and interrupts the code
+  stopped working when compiling with GCC, but works fine when compiled
+  with ICC. Find out why, and how to fix this.
+
+  This issue has to do with compiling the main kernel.c file. It may
+  have to do with remapping the PIC. Reproduce this by making the 
+  project with gcc (make CC=gcc), then touch kernel.c and re-make with
+  icc. Run and it should crash and burn. It does not appear to be the
+  linker messing things up, so it must be the compiler.
+\NewEntry
+bochs-2.2.6
+
+Bochs is a highly portable open source IA-32 (x86) PC emulator written in C++, that runs on most popular platforms.
+
+Home page: http://bochs.sourceforge.net/
+
+Dependencies:
+    X11
+
+NOTE: To enable the bochs debugger (recommended), use the following two configure options:
+    --enable-debugger
+    --enable-readline
+    --enable-disasm
+
+***** Begin Code Block *****
+./configure --prefix=/usr --disable-docbook \
+    --enable-debugger --enable-readline --enable-disasm \
+    --enable-idle-hack
+make
+make install
+***** End Code Block *****
+
+--enable-idle-hack: Enables Roland Mainz's experimental idle code, which is intended to keep Bochs from always using 100% of CPU time. When Bochs is waiting around for an interrupt, the idle code uses a select() loop and some X11 tricks to wait until user input arrives. This is designed to keep Bochs responsive while still yielding to other processes when Bochs is idle. It only works with X11 or term GUI.
+\NewEntry
+Cross Toolchain
+\NewFolder
+\NewEntry
+binutils-2.16
+
+***** Begin Code Block *****
+mkdir ../binutils-build
+cd ../binutils-builds
+../binutils-2.16/configure \
+    --prefix=/opt/arm-elf --target=arm-elf
+make
+make install
+***** End Code Block *****
+\NewEntry
+gcc-4.0.2
+
+***** Begin Code Block *****
+export PATH=/opt/arm-elf/bin:$PATH
+mkdir -v ../gcc-build
+cd ../gcc-build
+../gcc-4.0.2/configure \
+    --prefix=/opt/arm-elf \
+    --enable-languages=c \
+    --target=arm-elf --with-cpu=arm9 \
+    --disable-nls --disable-threads --disable-multilib
+make
+make install
+***** End Code Block *****
+\EndFolder
+\NewEntry
+Order Of Things
+
+http://www.mega-tokyo.com/forum/index.php?board=1;action=display;threadid=4719;start=30
+
+1) Enable A20
+2) Set up initial GDT
+3) Switch to 32-bit protected mode
+4) Set the final GDT
+5) Set up IDT
+6) Set up initial page directory and page tables
+7) Create a memory manager
+8) Run rest of operating system
+
+The first three operations are handled by grub according to the multiboot standard. The fourth option I handle explicitly in the start-up assembly code that also contains the jump to the main C kernel function.
+\NewEntry
+Terminology
+\NewFolder
+\NewEntry
+PIT - Programmable Interrupt Timer
+
+Makes it possible to trigger an interrupt at a specified time interval.
+\NewEntry
+ISR - Interrupt Service Routine
+
+The code that executes when an interrupt occurs. There may be only one Interrupt Service Routine per interrupt, and it needs to be coded and specified by the operating system.
+
+On an x86, the following registers should be saved before executing the Interrupt Service Routine, and restored when the ISR finishes:
+  - EAX
+  - EBX
+  - ECX
+  - EDX
+  - EBP
+  - ESI
+  - EDI
+  - ES
+  - DS
+  - FS
+  - GS
+
+The following registers will be saved automatically by the CPU when interrupts occur:
+  - EIP
+  - ESP
+  - SS
+  - CS
+These registers will also be restored automatically when the Interrupt Service Routine finishes with the `iret' assembly command.
+\NewEntry
+IRQs - Interrupt Requests
+
+These are interrupts that are triggered from hardware.
+\NewEntry
+PIC - Programmable Interrupt Controller
+\NewEntry
+ICW - Initialization Command Words
+\NewEntry
+Exceptions
+
+An x86 has 15 exceptions (2 are Intel reserved):
+  0  Divide Error
+  1  Debug Exceptions
+  2  Intel Reserved
+  3  Breakpoint
+  4  Overflow
+  5  Bounds Check
+  6  Invalid Opcode
+  7  Coprocessor Not Available
+  8  Double Fault
+  9  Coprocessor Segment Overrun
+  10 Invalid TSS
+  11 Segment Not Present
+  12 Stack Exception
+  13 General Protection Exception (Triple Fault)
+  14 Page Fault
+  15 Intel Reserved
+  16 Coprocessor Error
+\NewEntry
+Segment Descriptor
+\NewEntry
+Segment Selector
+
+A segment selector is a 16-bit identifier for a segment. It points to a segment descriptor that defines the segment.
+
+Bit position:  15..2  2   1..0
+       Items:  Index  TI  RPL
+
+Index:
+    Selects one of the 8192 descriptors in the GDT/LDT. The index is
+    multiplied by 8, which is the number of bytes in a segment
+    descriptor, to arrive at the index of the segment descriptor.
+
+TI (table indicator) flag:
+    Specifies which descriptor table to use. Set to 0 for the GDT or
+    set to 1 for the LDT.
+
+Requested Privilege Level (RPL):
+    Specifies the privilege level of the selector. Ranges from 0 (most
+    privilege) to 3 (least privilege).
+\NewEntry
+CPL - Current Privilege Level
+
+Bits 0 and 1 of the Code Segment (CS) and Stack Segment (SS) registers. This indicates the privilege level of the currently executing program (task).
+
+Usually, the CPL is equal to the privilege level of the code segment from which instructions are being fetched.
+\NewEntry
+DPL - Descriptor Privilege Level
+
+The DPL is the privilege level of a segment or gate. It is stored in the DPL field of the segment or gate descriptor for the segment or gate.
+
+A set of two bits that are contained within the second 4 bytes of a descriptor. Its possible values are the following:
+  00 = Ring 0
+  01 = Ring 1
+  10 = Ring 2
+  11 = Ring 3
+
+Each ring represents a level of privilege, where Ring 0 is the highest privilege and Ring 3 is the lowest privilege. If only two privileges are used in the operating system (Kernel and User mode), then Ring 0 and Ring 3 must be the ones used to represent Kernel Mode and User Mode respectively.
+\NewEntry
+RPL - Requested Privilege Level
+
+The RPL is an override privilege level that is assigned to segment selectors. It is stored in bits 0 and 1 of the segment selector.
+\NewEntry
+TSS - Task-State Segment
+
+The DPL in the TSS indicates the numerically highest privilege level that the currently executing program or task can be at and still be able to access the TSS.
+\NewEntry
+GDT - Global Descriptor Table
+
+Only one exists in the entire system.
+\NewEntry
+LDT - Local Descriptor Table
+ 
+Many exists, but only one per task and only one active at any single time.
+\NewEntry
+IDT - Interrupt Descriptor Table
+
+An Interrupt Descriptor Table is an array of descriptors that is used to associate interrupts/exceptions with Interrupt Service Routines. The IDT may hold a maximum of 256 descriptors in it.
+
+See also the `lidt' Intel assembly instruction.
+
+If you recieve the message "LDTR.valid=0" in Bochs, then this means that you are loading an IDT that has an invalid segment selector.
+\NewEntry
+PDBR - Page Directory Base Register or CR3
+
+Contains the physical address of a page directory. A page directory is an array of 32-bit (for an x86) page table entries (PDE). One page directory takes up 4kb (for an x86) of memory to store.
+\NewEntry
+PD - Page Directory
+
+A page directory is an array of 32-bit (for an x86) page table entries (PDE). One page directory takes up 4kb (for an x86) of memory to store.
+\NewEntry
+PDE - Page Directory Entry
+
+An entry that tells about where a page points to, and its attributes. The attributes for a PDE and PTE are identical.
+
+PDE attributes:
+
+31..............12  11..9  8......7  6  5  4......3   2    1      0
+Page frame address  Avail  Reserved  D  A  Reserved  U/S  R/W  Present
+
+Page frame address:
+    The physical address of memory (either the physical address of the
+    page, or the physical address of the page table).
+Avail:
+    Do what you want with this, not explicitly used by hardware.
+Reserved:
+    Reserved by Intel.
+D:
+    Dirty.
+A:
+    Accessed.
+U/S:
+    User or supervisor level. 1 is User; 0 is Supervisor.
+R/W:
+    Read or read and write. 1 is read and write; 0 is read only.
+Present:
+    1 is present; 0 is not present.
+\NewEntry
+PT - Page Table
+
+An array of 32-bit page specifiers. One page table maps 4 MB of memory and takes up 4 kb of memory to store (x86 specific).
+\NewEntry
+PTE - Page Table Entry
+
+An entry that tells about where a page points to, and its attributes. The attributes for a PDE and PTE are identical.
+
+PTE attributes:
+
+31..............12  11..9  8......7  6  5  4......3   2    1      0
+Page frame address  Avail  Reserved  D  A  Reserved  U/S  R/W  Present
+
+Page frame address:
+    The physical address of memory (either the physical address of the
+    page, or the physical address of the page table).
+Avail:
+    Do what you want with this, not explicitly used by hardware.
+Reserved:
+    Reserved by Intel.
+D:
+    Dirty.
+A:
+    Accessed.
+U/S:
+    User or supervisor level. 1 is User; 0 is Supervisor.
+R/W:
+    Read or read and write. 1 is read and write; 0 is read only.
+Present:
+    1 is present; 0 is not present.
+\NewEntry
+PB - Page Boundry
+
+A block of memory that has a starting address where the last 12 bits are *always* 0.
+\NewEntry
+PF - Page Frame
+
+A 4kb (for the x86) unit of contiguous addresses of physical memory. A page frame begins on a page boundry and is of fixed size. Since a page will be page aligned, the bottom 12 bits of a page frame will be zero.
+\NewEntry
+Page Aligned
+
+When an address is page aligned then the address is dividible by the architectures page size. This can easily be checked by performing address Mod page size and checking if it is zero. On an x86, an address that is page aligned should also have the bottom 12 bits as zero. (See PDE for a listing of the bits).
+\NewEntry
+Far pointer - Logical address
+\NewEntry
+Linear Address (Virtual Address)
+
+The processor's total addressable memory space.
+\NewEntry
+Ring 0
+
+The highest priority level supported by the x86 MMU. This may be considered Kernel Mode (Kernel Space).
+\NewEntry
+Ring 2
+
+The lowest level of priority that the x86 MMU supports. This may be considered User Mode (User Space).
+\NewEntry
+RTL - Run Time Library
+
+Used in the context of a kernel, this may refer to the internal system calls that are made available to kernel mode to make general programming a little easier. These system calls may include a string library, malloc(), free(), which effectively becomes a stripped down implementation of a C library.
+\NewEntry
+IASDMv[1-3] - Intel Architecture Software Developer's Manual volume [1-3]
+\NewEntry
+Identity-mapped Memory
+
+See: http://www.ngcoders.com/index.php?page=projects&name=os
+\NewEntry
+Call Gate ???
+\NewEntry
+Gates
+
+Control CPU transitions from one level of privilege to another.
+\NewEntry
+Process Image
+
+A process image is the kernel's representation of an executable program in memory. For an ELF executable, this would include its text, data, stack, etc. segments.
+
+The act of creating a process image includes loading the executable into memory (or at least relevant portions of it), parsing the object file to locate the parts that need to be loaded into memory, and allocating a process control block (and everything that goes with that) in order to prepare the program for execution.
+\NewEntry
+4G/4G Split Mode
+
+Refers to a technique of giving both process and kernel context a full 4 GB of virtual address space, as opposed to the 3GB/1GB split mode where 3 GB are used for a process and 1 GB for the kernel.
+
+See http://lwn.net/Articles/39283/ for a good overview of this and an implementation in Linux.
+
+This is effectively a technique to get around the x86 4GB memory hardware limit, and helps in achieving an address space larger that what is natively supported on an x86. Thus, this technique does come with a performance impact with regard to switching page directories for every system call from user to kernel space.
+\EndFolder
+\NewEntry
+ELF - Executable and Linker Format
+\NewEntry
+What is a Process?
+\NewFolder
+\NewEntry
+Process Control Block
+
+- Address space (i.e. all blocks of memory associated with a process)
+  Include: executable program
+           program data
+           stack
+- List of writable memory (for memory protection)
+- Some set of registers:
+  program counter
+  stack pointer
+  ...
+\NewEntry
+Fork(2)
+
+This is a standard system call suported by SUSv3.
+
+- Fork is the only way to create a new process.
+- Functionality:
+  creates a duplicate of the original process
+  file desriptors
+  registers
+- Copy-on-write (COW)
+
+Questions:
+  How do I implement IPC for tasks?
+  How do I make a process "block"?
+\EndFolder
+\NewEntry
+System Calls to Implement
+
+(see p23, Tanenbaum, Woodhull)
+\NewFolder
+\NewEntry
+Process
+\NewFolder
+\NewEntry
+pid_t fork(void);
+\NewEntry
+pid_t wait(int *stat_loc);
+\NewEntry
+pid_t waitpid(pid_t pid, int *stat_loc, int options);
+\NewEntry
+int execve(const char *path, char *const argv[], char *const envp[]);
+\NewEntry
+void exit(int status);
+\EndFolder
+\EndFolder
+\NewEntry
+Boot
+\NewFolder
+\NewEntry
+GDT
+
+The Intel Architecture Software Developer's Manual Volume 3 Section 4.5 specifically states that if the operating system only uses two privilege levels, then they should be levels 0 (supervisor) and level 3 (user).
+\EndFolder
+\NewEntry
+Interrupts
+\NewFolder
+\NewEntry
+General
+
+The base of the IDT should be its linear address. Otherwise, when paging is enabled the IDT will be translated incorrectly.
+
+http://www.mega-tokyo.com/forum/index.php?board=1;action=display;threadid=6259
+\NewEntry
+IRQ0 - Interrupt Timer
+
+1 tick = 1 / HZ
+
+where HZ is the frequency of the system.
+\EndFolder
+\NewEntry
+Memory Management
+
+TODO:
+ - Look up Fibonacci Search
+ - Look up Interpolation Search
+
+Search Memory Management 2 on alt.os.development
+\NewFolder
+\NewEntry
+x86 Paging
+
+Logical Address
+Linear (Virtual) Address
+Physical Address
+
+The Intel architecture specifies a three level paging scheme to translate linear addresses.
+
+31       22 21     12 11         0
++----------+---------+------------+
+|    PD    |   PT    |   OFFSET   | Linear Address
++----------+---------+------------+
+      |         |           |
+      |         |           +-------+  Page Frame
+      |         |                   |  +========+
+ +----+         +----+  Page Table  |  |        |
+ |                   |  +========+  |  |--------|
+ |   Page Directory  |  |        |  +->|  Addr  |
+ |   +============+  |  |--------|     |--------|
+ |   |            |  +->|  PTE   |--+  |        |
+ |   |------------|     |--------|  |  |        |
+ +-->|    PDE     |--+  |        |  +->+========+
+     |------------|  |  |        |
+     |            |  +->+========+
+  +->+============+
+  |
+ CR3
+
+1024 * 1024 * 4096 = 2^32
+
+The current Page Directory (PD) is stored at the address in CR3 (PDBR). For the Intel architecture, you can have one PD address for all memory, one PD for each taks, or a combination of the two (see IASDMv3).
+
+Both the Page Directory and Page Table have 1,024 32-bit addresses. Thus, the ten bit indices will address all entries (2^10 = 1024). Additionally, the PD, PT, PDE, and PTE are all physical pages (required by the x86 MMU).
+
+The 32-bit address retrieved by the PDE is the base address of the Page Table (PT), from which the PT index is used to select a 32-bit address that serves as the base address of a Page Frame (PF).
+
+The Page Frame (PF) is the starting address of a physical page that contains the physical address that is really being referenced by the linear address. The offset in the linear address determines the final 32-bit address that is the location in memory that we are looking for. The linear address offset is 12 bits, and will allow all 4096 bytes to be addressed in the Page Frame (2^12 = 4096).
+
+Since their are 1024 Page Directory Entries, each of which refernce a Page Table of 1024 Page Table Entries, and each Page Table Entry contains 4096 bytes of addressable memory there exists a total of 4GB of virtual memory available to a single task:
+  ° 1024 PDE * 1024 PTE * 4096 bytes = 4294967296 bytes = 4GB
+
+To enable paging, you only need to setup one Page Directory, and one Page Table. Then, write the Page Directory base address to the PDBR. Once this is done paging will be enabled, and you may setup any other Page Directories you need. Just switch the PDBR to the relevant Page Directory to be running in a different address space.
+
+References
+==========
+
+Intel 80386 Programmer's Reference Manual 1986 (Section 5.2)
+  * http://blackhole.cs.uwec.edu/~munozga/cache/80386/Chap5.html
+\NewEntry
+Identity-mapping the kernel
+
+More explanation of memory mapping:
+http://www.mega-tokyo.com/forum/index.php?board=1;action=display;threadid=5997
+
+Each process has an address space of 4 GB, and this memory needs to be split up into regions that are designated to be used by both user and kernel. The first 3 GB are reserved for the user, and the top 1 GB are reserved for the kernel.
+
+Kernel Space
+============
+
+The kernel starts at the 1MB mark (0x100000) and extends until the symbol `end', which is marked through the GNU linker script (kernel.ld). From these values, we can determine the exact amount of memory the kernel is utilizing at run-time. The linker script will also ensure that the end of kernel memory symbol will be page aligned.
+
+Each page between 0x100000 and the end of kernel memory symbol needs to be mapped into each address space somewhere in the designated kernel space (normally above the 2GB virtual address, but it depends on the kernel implementation).
+\NewEntry
+Map Page Directory Into Itself
+
+Overview
+========
+
+Mapping the page directory into the last entry in the page directory will give fixed locations to access each page directory and all of the pages that get mapped. Another way to describe this is that the last PDE should be the address of the page directory.
+
+The main benefit of mapping the page directory into itself is that the virtual address of any element of the page directory can be calculated with the following formula:
+  virt_addr of page_directory[i] = PAGE_DIRECTORY + (i * PAGE_SIZE)
+
+PAGE_DIRECTORY: Represents the address of the page directory (PDBR).
+PAGE_SIZE: Represents the size (in bytes) of a single page (e.g. 4096).
+
+Through this formula, any page table can be referenced without accessing the PDTR directly, and every element of the page table will be represented by 4 bytes (double word) beginning at the base address calculated. So, if you were looking for PTE 512 you would need to increment the calculated address by 512 * 4 bytes.
+
+Since the page directory is byte addressable, virtual memory mapping can be done easily and efficiently. Use the byte addressable page directory to define an algorithm that is able to convert physical addresses to virtual addresses. This will become the virtual memory memory mapper for the kernel.
+
+Pros
+====
+
+1) All mapped pages are accessible beginning at 0xffc00000.
+2) The virtual address of page_dir[i] = 0xffc00000 + (i * PAGE_SIZE)
+
+Cons
+====
+
+1) Takes up one PTE, thus 4 MB of virtual address space is reserved for
+   this self-mapping. However, no additional pages are allocated to
+   store the information. So, this wasted space is minimal, especially
+   considering how unlikely it is that kernel space will require all
+   of its possible address space.
+\NewEntry
+brk/sbrk (notes on)
+
+int brk(unsigned long end_data_segment);
+
+`brk' controls the size of memory allocated to a process. Specifically, this function shall increase or decrease the size of its data section. The variable `endds' designates the value of the highest virtual address of the data section, which is also referred to as the break value.
+
+In the case of internal kernel functionality, kbrk shall define the end of the data section that is the kernel heap. The space allocated by brk shall be virtually contiguous with the previous data region. This is done easily in a kernel that has a pre-defined area for the kernel heap.
+
+void *sbrk(unsigned long increment);
+
+`sbrk' changes the current break value by 'increment' number of bytes. `sbrk' shall return the old break value. Classically, `sbrk' calls `brk', but internally this could be changed to suit the needs of the application. Again, the space that is expanded should be virtually contiguous to the old data section.
+
+With a kernel, the accounting information for the break value may be stored differently than by using `brk'; however, `sbrk' should behave similar to how Bach explains the routine.
+
+References
+==========
+
+"The Design of the UNIX Operating System", Bach.
+\NewEntry
+Kernel Space
+
+Levels of memory management
+===========================
+
+  1) Physical Page Allocator
+  2) Kernel Memory Mapping
+  3) Kernel Memory Allocator
+\NewFolder
+\NewEntry
+Physical Page Allocator
+
+TODO: Add functionality for allocating n number of pages that are
+      physically contiguous.
+
+Definition of the problem
+=========================
+
+Essentially, this comes down to a data structure problem with a twist on the restrictions on coding a kernel. I have decided to represent each page on a stack, where each page element keeps track of at least the physical and virtual addresses of a page. Optionally, a page element will most likely hold some sort of flags variable to keep track of page usage information, but this is not required for an initial implementation.
+
+The problem involves the allocation of physical page addresses or a structure that represents a page. So, either an address pointing to a free page or a structure that contains the physical address, virtual address, flags, etc. is returned. This functionality should co-exist utilizing the same data structure.
+
+Given:
+======
+
+  * Start of page addressable memory (starts at the end of kernel
+    memory)
+  * End of memory (address of)
+  * Page size (given by the architecture)
+  * Size of my page structure (see struct page_t in include/page.h)
+
+Kernel "rules":
+===============
+
+Not so much about rules, but behavior exhibited by working in kernel code.
+
+  1. The allocation of the page structures cannot be done on the
+     kernel's stack due to memory/stack size constraints. Thus, the
+     space for all of the page structures must be taken from what is
+     available from the page allocator.
+
+     Of course, this leads to a circular dependency that you need to
+     deal with in code, but it is possible (and not too difficult). One
+     way around this is to simply pop the top n pages from the stack,
+     where n is the number of pages required to store all of the page
+     structures.
+
+     A side effect of this circular dependency is that the physical
+     page allocator cannot utilize kernel memory allocation routines
+     due to the possibility of the page table scheme not completely
+     initialized when it is used. This would require paging to be
+     enabled!
+
+Implementation Details
+======================
+
+API:
+    void init_page_table(unsigned long pt_start, int num_pages,
+                         unsigned long pt_size);
+    page_t *pop_page();
+    void push_page(page_t *page);
+    unsigned long *alloc_page();
+    int dealloc_page(unsigned long *page);
+
+pop_page() and push_page() deal with page_t structures, while alloc_page() and dealloc_page() deal only with the physical address of a page. The distinction is subtle, but important to understand because their implementation reflects how the page table stack is modified.
+
+To achieve the manipulation of both page_t structures or physical addresses, and to use them in any order without corrupting the stack I decided to use a doubly-linked list implementation of a stack. However, this stack is not normal because I don't have access to any memory management facilities (remember, I am still in the midst of setting everything up for memory management). A doubly-linked implementation would also ensure that the stack would not need to be used in any sort of order (i.e. pushing/popping along with allocation/de-allocation in the same logical order).
+
+It is important to note that de-allocation or popping of a page does not actually free any memory to the system. It only gives the illusion that the page is no longer in the physical page allocator, but in fact the total page allocation stack needs to persist in kernel memory for the life of the kernel.
+
+Additionally, one cannot traverse this list at any given moment and find out what all the pages are being used for. Not all pages are guaranteed to be represented in this page allocator, but the space for all pages needs to exist.
+
+pop_page() returns an entire page element, not just its physical page address, so it is similar to just removing that element from the list, which can be simulated by updating the next and prev pointers.
+
+By removing elements you will effectively remove the ability to de-allocate a physical page address to a page structure that is currently in use, which acts as a protection mechanism since allocating an address on a page that has been popped off would be bad.
+
+Allocating a physical address removes the address from the element (setting its value to 0, which is not a possible real value for a physical or virtual address), but the page structure stays linked on the beginning of the list. The head pointer is moved to the next available element, but an empty structure remains on the heads prev pointer. This will allow de-allocation of a pointer by following head's prev pointer to an empty and unused page structure so its physical address can be re-initialized by whatever address was passed in by the dealloc_page() function.
+
+All four functions execute in constant time. However, the page struct will require two pointers for a doubly-linked list. This is expensive, but it allows me to work around any O(n) searches on push_page() or dealloc_page() functions.
+
+The mixing of pop_page() and alloc_page() in any order will work well with this implementation.
+
+TODO:
+  * This implementation does not handle the allocation of more than one
+    physically contiguous page. To implement this in the current
+    physical page allocator would introduce a function of O(n). And this
+    functionality is required by the kernel memory allocator (kmalloc).
+\NewEntry
+Kernel Memory Mapping
+
+Overview
+========
+
+There needs to be a function that maps an arbitrary physical address to a specified virtual address. This function should be able to map a physical address into the page directory via the page directory self mapping (since kernel space is mapped into every address space).
+
+This function should be the low-level function used to tie together the high-level kernel memory allocator, virtual memory allocator, and stack allocator to the physical page allocator.
+
+The end result needs to be some type of functionality that allows [non-]contiguous blocks of pages to be allocated for use by the address space, while keeping contiguous virtual addresses. The virtual memory mapper must map any possible virtual address to any possible physical page.
+
+Implementation Details
+======================
+
+  void kmap(unsigned long virt_addr, unsigned long flags);
+
+This function should be kept as generic as possible, and take as parameters the virtual address to map and flags. 	The flags will represent what flags to use to mask off the allocated page (supervisor, read/write, present/not present), what type of physical memory to allocate (DMA vs. other), etc.
+
+The main purpose of this function is to have a single function where the all high-level allocators for kernel space and user space may map virtual memory to physical page(s).
+\NewEntry
+Kernel Memory Allocator
+
+TODO: Add functionality for a flags variable that will be used to
+      specify what type of physical RAM to allocate (DMA vs. other),
+      and whether this memory needs to be physically contiguous or not.
+      (This is a variable that kmap() should understand.) This memory
+      will always be supervisor, read/write, and present, so this should
+      be implied when kmap() is called from kmalloc().
+
+Overview
+========
+
+The kernel memory allocator is the kernel's equivalent to the user space malloc(3) and free(3). It should use the kmap() function to allocate memory from the kernel's designated heap segment. The memory the kernel allocates should be both physically and virtually contiguous.
+
+Implementation Details
+======================
+
+The current memory allocation algorithm is taken directly from "The C Programming Language", by Kernighan and Ritchie (see 8.7 Example - A Storage Allocator). So, all of the pro's and con's of that algorithm is what should be expected from the current kmalloc() implementation.
+
+The main function that needed to be implemented to make the K&R algorithms "just work" is a kernel implementation of sbrk(2). The kernel implementation of this function, ksbrk(), manages the next available address for a given virtual memory heap (either for kernel or user space).
+
+The kernel memory allocator manages the kernel virtual memory heap available address, which is used as a parameter to ksbrk(). This variable is guaranteed to be page aligned at all times, and will never expand outside of the designated heap or into stack space, which is located at the top of the heap.
+
+References
+==========
+
+"The C Programming Language - 2nd Edition" - Kernighan & Ritchie
+  * http://freebooks.by.ru/view/CProgrammingLanguage/kandr.html
+\EndFolder
+\NewEntry
+User Space
+
+Levels of memory management
+===========================
+
+  1) Virtual Memory Allocator
+\NewFolder
+\NewEntry
+Virtual Memory Allocator
+
+Overview
+========
+
+The virtual memory manager will require the ability to allocate an arbitrary amount of virtual memory from the kernel's heap segment. This VM Allocator should return an address that is reserved as the beginning of a virtual memory address. The virtual memory address allocated should be completely arbitrary; however, this address should be located within the users heap section. Because of this requirement, the algorithm will need some way to determine an open virtual memory address that is at least of size: num_pages * PAGE_SIZE. Additionally, the memory allocated should implement a type of demand paging, so not all memory set aside by the kernel is actually allocated by the physical page allocator and mapped into the address space.
+
+Implementation
+==============
+
+  vmalloc(unsigned long num_pages, unsigned long flags);
+
+The kernel VM allocator should use the kmap() function so an arbitrary VM address will be allocated that is guaranteed to be available, and page aligned.
+
+The kernel VM allocator will implement demand paging for the kernel. This is done so that not all physical memory needs to be allocated at once. Instead, the kernel tracks how much memory has been allocated by the virtual memory allocator, and if a memory address is used that is in this range and a physical page is not present a page fault will occur. Then, the page fault will trigger a search to verify the acounting of this memory for the kernel, and map a page into the address space.
+
+Some things to consider:
+  1) Does the VM Allocator need to dealloc VM other than at the
+     termination of the process?
+  2) Or is it constantly expanding (increasing in size), and relying
+     on user space to manage the VM?
+
+The answer to these questions may not be completely clear, but they mostly depend on how this kernel facility should be utilized. It could possibly be the kernel functionality used to handle a syscall to sbrk(2).
+
+Memory Management 2: Virtual Memory - by Tim Robinson
+  * http://www.themoebius.org.uk/tutes/memory2.html
+\NewEntry
+Stack Allocator
+\EndFolder
+\EndFolder
+\NewEntry
+Kernel Modules
+
+ld -g -Ttext 0xC0400000 --cref -Map test_dlist.map ../lib/dlist.o \
+    ../mm/page.o ../mm/kmalloc.o ../mm/mm.o ../kprintf.o ../gnu.o \
+    ../cr0_cr3.o -o test_dlist.elf
+\NewFolder
+\NewEntry
+Overview
+
+Kernel modules are kernel tasks that may be loaded into memory either at boot time, or dynamically during run-time. A kernel module shall be a normal ELF executable. However, kernel modules shall only take on kernel responsibilities, and will run with supervisor privileges.
+
+There will be two ways to load kernel modules:
+  1) GRUB will load specified kernel modules at boot time.
+  2) Through shell utilities for loading kernel modules at run-time.
+
+It may be beneficial to make kernel modules position independent.
+\NewEntry
+VM Representation
+
+How do I allocate memory to a kernel module?
+
+If the kernel module is being loaded at run-time, then map the file into memory. Second, parse the kernel module and load the program header(s) (a.k.a. segments) into memory. Kernel modules, by definition, should have no user context. So, the memory used to create the kernel module process image should be allocated from kernel memory. Creation in kernel memory will ensure that the module will have supervisor privileges.
+
+If the kernel module is loaded at boot time, then begin above at the second step because GRUB loads the module into memory automatically.
+\EndFolder
+\NewEntry
+Coding
+\NewFolder
+\NewEntry
+ASM Function Calling Conventions
+
+If you need to use ebx, esi, edi, or ebp in a nasm function called from GCC, then you must preserve the state of those registers. You may do this by pushing these variables onto the stack in the beginning of the nasm function and poping them at the end of the nasm function.
+\EndFolder

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="2"
+   name=""
+   committed-date="2004-10-10T05:14:36.308553Z"
+   url="http://xusia.net/svn/os/trunk/kernel"
+   last-author="munozga"
+   kind="dir"
+   uuid="b24875c2-7de5-0310-877d-e7b3fd4b4b49"
+   repos="http://xusia.net/svn/os"
+   revision="4"/>
+<entry
+   committed-rev="1"
+   name="gdt.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="6fb2dcac43f445fd24a285a004605675"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="asm.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="81c535a0953464c63e0b62d125519a31"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="idt.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="3dcfbad5c0a925db47661fec804d8108"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="2"
+   name="kernel.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-10T05:14:36.308553Z"
+   checksum="1ccdb8d029351b0bed50ceb6f0b083c0"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="boot.asm"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="4d7b3d4312e13628300c5312c19e9bc8"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="task.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="2ee87a53198ca79c12b98323e5dedea3"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="elf.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="09768ac3ff17e853f32c5eab6267146e"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="sched.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="3e751c2baa364bb343445e4675a730ff"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="panic.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="954b20cd789a63223ba0713c7077e576"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="Makefile"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="fa942491caed32913f3b3a6844617f67"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="interrupt.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="7946a57ac73e88ba1628003bddd7dfb6"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+</wc-entries>

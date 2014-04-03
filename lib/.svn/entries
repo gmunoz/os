@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="2"
+   name=""
+   committed-date="2004-10-10T05:14:36.308553Z"
+   url="http://xusia.net/svn/os/trunk/lib"
+   last-author="munozga"
+   kind="dir"
+   uuid="b24875c2-7de5-0310-877d-e7b3fd4b4b49"
+   repos="http://xusia.net/svn/os"
+   revision="4"/>
+<entry
+   committed-rev="2"
+   name="multiboot.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-10T05:14:36.308553Z"
+   checksum="61cf1e03fa930a19b898dffeb70dd896"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="rbtree.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="aabb699310a6d1bf5ba3d38855727eba"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="string.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="c4a38e0c4229610363a6722026ef5ee9"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="video.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="cf54dd690aedbe0c42ad4b90f8735ab3"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="gnu.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="9aac748b609a4faaf20c127b7809d93d"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="list.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="2ee978948b886bd2abd1fce974b473a1"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="Makefile"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="d0f31d6231675e3f6fbc86328fe6f781"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="2"
+   name="kprintf.c"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-10T05:14:36.308553Z"
+   checksum="c95edb4ba5e82e9bcafdf9c5969573a8"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+</wc-entries>

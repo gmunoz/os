@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="4"
+   name=""
+   committed-date="2004-12-04T17:53:22.648325Z"
+   url="http://xusia.net/svn/os/trunk/doc"
+   last-author="munozga"
+   kind="dir"
+   uuid="b24875c2-7de5-0310-877d-e7b3fd4b4b49"
+   repos="http://xusia.net/svn/os"
+   revision="4"/>
+<entry
+   committed-rev="4"
+   name="os.gjots"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-12-04T17:53:22.648325Z"
+   checksum="cd02d497eea50186b27b8639a78859f9"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+</wc-entries>

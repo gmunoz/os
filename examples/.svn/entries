@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="1"
+   name=""
+   committed-date="2004-10-02T21:49:50.762715Z"
+   url="http://xusia.net/svn/os/trunk/examples"
+   last-author="munozga"
+   kind="dir"
+   uuid="b24875c2-7de5-0310-877d-e7b3fd4b4b49"
+   repos="http://xusia.net/svn/os"
+   revision="4"/>
+<entry
+   committed-rev="1"
+   name="test_task0.ld"
+   text-time="2006-02-05T15:09:57.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="e5305c252bc6551b98639ac282bf1dab"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:57.000000Z"/>
+<entry
+   committed-rev="1"
+   name="test_task0.c"
+   text-time="2006-02-05T15:09:57.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="6b0cc03088b833f804905e5be55d88d7"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:57.000000Z"/>
+<entry
+   committed-rev="1"
+   name="test_rbtree.c"
+   text-time="2006-02-05T15:09:57.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="77a8c8388dea89fa17c2354e612c7282"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:57.000000Z"/>
+<entry
+   committed-rev="1"
+   name="test_vma.c"
+   text-time="2006-02-05T15:09:57.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="c0ab7861827641318a276befc75747d7"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:57.000000Z"/>
+<entry
+   name="user_space"
+   kind="dir"/>
+<entry
+   committed-rev="1"
+   name="test_list.c"
+   text-time="2006-02-05T15:09:57.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="76fa61bd1ba682d777f47e9f1bb0481a"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:57.000000Z"/>
+<entry
+   committed-rev="1"
+   name="Makefile"
+   text-time="2006-02-05T15:09:57.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="6229784464e2792456eeb8532e89e029"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:57.000000Z"/>
+</wc-entries>

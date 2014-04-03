@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wc-entries
+   xmlns="svn:">
+<entry
+   committed-rev="3"
+   name=""
+   committed-date="2004-12-04T06:19:10.572362Z"
+   url="http://xusia.net/svn/os/trunk/include"
+   last-author="munozga"
+   kind="dir"
+   uuid="b24875c2-7de5-0310-877d-e7b3fd4b4b49"
+   repos="http://xusia.net/svn/os"
+   revision="4"/>
+<entry
+   committed-rev="1"
+   name="gnu.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="f47c94ffbbd80a08a1a097616271dd7f"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="panic.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="fde0cc82c13eccee2069b3cfe1035ecc"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="interrupt.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="542642d7d77c35fa805486703c79bd28"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="2"
+   name="kglob.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-10T05:14:36.308553Z"
+   checksum="16b0b856e09683bf36219d56cf2d4c15"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="segment.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="801f458f276fc7b1f285e6d337e45966"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="task.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="9d9059f53b570b9780f68a7da8fd858b"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="stack.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="01e59542e9cabe8fc8775a94c373b5fe"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="elf.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="47ce80c9ba74374cfae771bbcef1f97c"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="string.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="448f274b899b4ef0547b9032a8208cd2"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="video.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="78e1dca8ecb56d6521c2a70f099580d2"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="3"
+   name="mm.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-12-04T06:19:10.572362Z"
+   checksum="975474e0fb3811405f828281f65d3472"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="stddef.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="53a95f8c7afb5c584a38d80ba8cc5c12"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="list.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="edcdfe0f98946c7af81edac20f221659"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="2"
+   name="page.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-10T05:14:36.308553Z"
+   checksum="cc97a4d3b25b5e9d2138bd236af25445"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="kprintf.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="cad5de7eb8b2d0780b3d763aea1c8e1e"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="multiboot.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="ab0fd2fd2ea250c0894b989a74a1ec93"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="gdt.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="f2186faece7060fe766d44761232a03e"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="desc.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="66e4152069767a14337fc57165ad714a"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="idt.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="51496bd409098f3818b08692025f932f"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="asm.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="de3ee3857c3646861fb67f7529095ecd"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="3"
+   name="kmalloc.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-12-04T06:19:10.572362Z"
+   checksum="f50b24495f0ebe7fa8b13887089ecba3"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="rbtree.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="07f6677ccd6c4249b07e5ae7413b6761"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   committed-rev="1"
+   name="sched.h"
+   text-time="2006-02-05T15:09:56.000000Z"
+   committed-date="2004-10-02T21:49:50.762715Z"
+   checksum="0466fa1575ae3f8dc8e8fbdeddcf2360"
+   last-author="munozga"
+   kind="file"
+   prop-time="2006-02-05T15:09:56.000000Z"/>
+<entry
+   name="arch"
+   kind="dir"/>
+<entry
+   name="sys"
+   kind="dir"/>
+</wc-entries>

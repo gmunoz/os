@@ -1,0 +1,37 @@
+Author
+======
+
+Gabriel Munoz <munozga@uwec.edu>
+
+License
+=======
+
+All code here is licensed under the GNU General Public License. Please
+see the file COPYING located in the top-level source directory for a
+copy of this license. Some of the code was borrowed as per the GPL of
+other projects. It should be noted where this was done in the source
+files. Other code was taken from publications, such as books, and is
+also noted in the source files.
+
+Toolchain
+=========
+
+The primary toolchain used to develop this kernel is:
+  GCC <http://gcc.gnu.org/>
+	  or
+  Intel C Compiler (tested ICC-8.1)
+  Binutils <http://sources.redhat.com/binutils/>
+  NASM <http://nasm.sourceforge.net/>
+
+However the Intel C/C++ Compiler will also work with this release (and
+is quite useful when GCC gets into "funk" mode). See the INSTALL file
+for detailed instructions on how to compile this code, and the makefile
+targets available.
+
+Syntax Notes
+============
+
+- The C keyword `restrict' is part of the C99 standard. Use --std=c99 to
+  enable this mode (it is not in this mode by default, at least not 100%
+  in this mode). See Section 6.7.3.1 of the ISO C99 Standard.
+- gcc -fsyntax-only => specifies compiler to check for syntax only.

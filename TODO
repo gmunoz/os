@@ -1,0 +1,17 @@
+- After each context switch the TLB needs to be flushed. Make sure to
+  actually implement this in the stack-swapping routine.
+- Remove itoa from lib/gnu.c ... one step closer to removing this file.
+- Change the CHECK_FLAG and bit_pos functions to be a single macro
+  specific to each bit check case. So CHECK_MAP_FIXED and CHECK_KERNEL,
+  should exist, and each of those macros should have the hard-coded bit
+  positions to be more efficient than the current methods.
+- Re-implement the physical page allocator using the buddy system and
+  include functionality for allocating contiguous memory, and split the
+  memory allocated by DMA and non-DMA.
+- Get kernel modules to load/run (easier said than done)
+- Write a better video handler (probably just do this as I need it).
+- Mutual Exclusion (semaphores)
+  See Dijkstra
+- Random number generator
+  See Knuth
+  May want to assess how other OS's manage random number generation.
